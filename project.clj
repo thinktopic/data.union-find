@@ -1,4 +1,4 @@
-(defproject org.jordanlewis/data.union-find "0.1.0-SNAPSHOT"
+(defproject org.jordanlewis/data.union-find "0.1.0"
   :description "Tarjan's Union-Find algorithm."
   :url "http://github.com/jordanlewis/data.union-find"
   :license {:name "Eclipse Public License"
