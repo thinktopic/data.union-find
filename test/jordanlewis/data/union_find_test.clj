@@ -8,11 +8,11 @@
                 (union 3 4)
                 (union 4 5))]
     (testing "Missing elements have nil leaders."
-      (is (= [set nil] (get-canonical set 10))))
+      (is (= nil (get-canonical set 10))))
     (testing "Singleton sets are their own leaders."
-      (is (= 6 (second (get-canonical set 6)))))
+      (is (= 6 (get-canonical set 6))))
     (testing "Singleton sets unioned with themselves are still their own leaders."
-      (is (= 6 (second (get-canonical (union set 6 6) 6)))))
+      (is (= 6 (get-canonical (union set 6 6) 6))))
     (testing "Unioning from both sides of size works as expected"
       (let [set (union set 1 3)
             set-left  (union set 1 4)
@@ -20,18 +20,18 @@
         (is (= 1 (set-left  1)))
         (is (= 1 (set-right 1)))))
     (testing "Connected singletons have the same leader."
-      (let [[set a] (get-canonical set 1)
-            [set b] (get-canonical set 2)
-            [set c] (get-canonical set 3)
-            [set d] (get-canonical set 4)
-            [set e] (get-canonical set 5)]
+      (let [a (get-canonical set 1)
+            b (get-canonical set 2)
+            c (get-canonical set 3)
+            d (get-canonical set 4)
+            e (get-canonical set 5)]
         (is (= a b))
         (is (= c d))
         (is (= c e))
         (is (not= b c))
         (let [set (union set 2 3)
-              [set a] (get-canonical set 1)
-              [set c] (get-canonical set 3)]
+              a (get-canonical set 1)
+              c (get-canonical set 3)]
           (is (= a c 1)))))
     (testing "Seq returns only leader elements"
       (is (= 3 (count (seq set))))
