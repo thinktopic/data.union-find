@@ -30,11 +30,7 @@ Union two sets:
 Look up the canonical element for an element:
 
     user=> (get-canonical uf 3)
-    [{5 [5], 4 [4], 2 [3 2], 1 [1]} 2]
-
-Getting the canonical element of a set can change the internals of the data structure,
-due to an optimization called path compression. Therefore, get-canonical returns two
-objects: the updated data structure, and the requested canonical element.
+    2
 
 Getting the count of a union-find data structure returns the number of connected
 components, not the number of elements. count is a constant-time operation.
@@ -50,8 +46,7 @@ canonical elements of the data structure, not all of the elements:
 
 union-find also implements ILookup and IFn as canonical element lookups, so you
 can use get on it or apply it to an element like you would with a vector or a
-map. Using it this way doesn't perform the path compression optimization, and
-just returns the canonical element.
+map.
 
     user=> (uf 3)
     2
