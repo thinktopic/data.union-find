@@ -34,15 +34,19 @@
               c (get-canonical set 3)]
           (is (= a c 1)))))
     (testing "Seq returns only leader elements"
-      (is (= 3 (count (seq set))))
-      (is (= #{1 3 6} (into #{} (seq set)))))
-    (testing "Count counts the number of connected components."
-      (is (= 3 (count set)))
-      (is (= 2 (count (union set 1 3)))))
+      (is (= 3 (count (seq set)))))
+    (testing "Count-sets counts the number of connected components."
+      (is (= 3 (count-sets set)))
+      (is (= 2 (count-sets (union set 1 3)))))
+    (testing "Count counts the number of total elements in the universe"
+      (is (= 6 (count set)))
+      (is (= 6 (count (union set 1 3)))))
     (testing "Conj adds new singletons"
       (let [set (conj set 7)]
-        (is (= 4 (count set)))
-        (is (= 3 (count (union set 6 7))))
+        (is (= 7 (count set)))
+        (is (= 4 (count-sets set)))
+        (is (= 7 (count (union set 6 7))))
+        (is (= 3 (count-sets (union set 6 7))))
         (is (= 7 (set 7)))
         (is (= 6 ((union set 6 7) 7)))))
 

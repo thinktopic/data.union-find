@@ -7,6 +7,7 @@
   "A data structure that maintains information on a number of disjoint sets."
   (union [this x y] "Union two sets. Return a new disjoint set forest with the
 sets that x and y belong to unioned.")
+  (count-sets [this] "Get the number of disjoint sets in this forest.")
   (get-canonical [this x] "Get the canonical element of an element, or nil if no
 element exists in the forest."))
 
@@ -37,7 +38,7 @@ element exists in the forest."))
 
   ;; count returns the number of disjoint sets, not the number of total elements
   clojure.lang.Counted
-  (count [this] num-sets)
+  (count [this] (count @elt-map))
 
   clojure.lang.ILookup
   ;; valAt gets the canonical element of the key without path compression
@@ -100,7 +101,8 @@ element exists in the forest."))
                       (assoc! x-root (assoc (elt-map x-root) :rank (inc x-rank)))
                       (persistent!)
                       (ref))
-                    num-sets _meta)))))
+                    num-sets _meta))))
+  (count-sets [this] num-sets))
 
 (def ^:private empty-union-find (->PersistentDSF (ref {}) 0 {}))
 
