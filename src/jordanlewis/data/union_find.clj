@@ -25,7 +25,7 @@ element exists in the forest."))
   clojure.lang.Seqable
   ;; seq returns each of the canonical elements, not all of the elements
   (seq [this]
-    (map first (filter (comp nil? :parent val) @elt-map)))
+    (keys @elt-map))
 
   clojure.lang.IPersistentCollection
   ;; cons adds the input to a new singleton set

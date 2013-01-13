@@ -33,8 +33,8 @@
               a (get-canonical set 1)
               c (get-canonical set 3)]
           (is (= a c 1)))))
-    (testing "Seq returns only leader elements"
-      (is (= 3 (count (seq set)))))
+    (testing "Seq returns all elements"
+      (is (= 6 (count (seq set)))))
     (testing "Count-sets counts the number of connected components."
       (is (= 3 (count-sets set)))
       (is (= 2 (count-sets (union set 1 3)))))
