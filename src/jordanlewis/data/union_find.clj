@@ -170,6 +170,8 @@ sets that x and y belong to unioned."))
   (union [this x y]
     (throw (java.lang.UnsupportedOperationException "Use union! on transients")))
 
+  (count-sets [this] num-sets)
+
   TransientDisjointSetForest
   (union! [this x y]
     (let [[_ x-root] (get-canonical this x)
