@@ -148,7 +148,7 @@ sets that x and y belong to unioned."))
       ))
 
   (persistent [this]
-    (PersistentDSF. (persistent! elt-map) num-sets meta))
+    (PersistentDSF. (ref (persistent! elt-map)) num-sets meta))
 
   DisjointSetForest
   (get-canonical [this x]

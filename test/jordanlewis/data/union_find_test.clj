@@ -160,5 +160,6 @@
         )
     (testing "unioning a missing element is a no-op."
       (is (= master-set (union! master-set 5 10))))
-    )
-  )
+    (testing "persistent! works"
+      (let [set (persistent! master-set)]
+        (is (= set (persistent! (transient set))))))))
