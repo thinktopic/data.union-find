@@ -46,7 +46,7 @@ sets that x and y belong to unioned."))
   clojure.lang.IEditableCollection
   (asTransient [this]
     (->TransientDSF
-     (transient elt-map) num-sets _meta))
+     (transient @elt-map) num-sets _meta))
 
   ;; count returns the number of disjoint sets, not the number of total elements
   clojure.lang.Counted
