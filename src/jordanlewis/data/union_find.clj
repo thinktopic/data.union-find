@@ -119,12 +119,8 @@ sets that x and y belong to unioned."))
 (deftype TransientDSF [elt-map
                        ^:unsynchronized-mutable num-sets
                        meta]
-  Object
-  ;; prints out a map from canonical element to elements unioned to that element.
-  (toString [this] (str (group-by this (keys elt-map))))
-
   clojure.lang.Counted
-  (count [this] num-sets)
+  (count [this] (count elt-map))
 
   clojure.lang.ILookup
   ;; valAt gets the canonical element of the key without path compression
@@ -159,14 +155,13 @@ sets that x and y belong to unioned."))
     (let [node (elt-map x)
           parent (:parent node)]
       (cond
-       (= node nil) [this nil]
-       (= parent nil) [this x]
+       (= node nil) nil
+       (= parent nil) x
        ;; path compression. set the parent of each node on the path we take
        ;; to the root that we find.
-       :else (let [[_ canonical] (get-canonical this parent)
-                   ]
+       :else (let [canonical (get-canonical this parent)]
                (do (assoc! elt-map x (assoc (get elt-map x) :parent canonical))
-                   [this canonical])))))
+                   canonical)))))
   (union [this x y]
     (throw (java.lang.UnsupportedOperationException "Use union! on transients")))
 
@@ -174,8 +169,8 @@ sets that x and y belong to unioned."))
 
   TransientDisjointSetForest
   (union! [this x y]
-    (let [[_ x-root] (get-canonical this x)
-          [_ y-root] (get-canonical this y)
+    (let [x-root (get-canonical this x)
+          y-root (get-canonical this y)
           x-rank (:rank (elt-map x-root))
           y-rank (:rank (elt-map y-root))]
       (cond (or (nil? x-root) ;; no-op - either the input doesn't exist in the
