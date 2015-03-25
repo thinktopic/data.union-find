@@ -48,7 +48,7 @@ sets that x and y belong to unioned."))
     (->TransientDSF
      (transient @elt-map) num-sets _meta))
 
-  ;; count returns the number of disjoint sets, not the number of total elements
+  ;; count returns the number of total elements
   clojure.lang.Counted
   (count [this] (count @elt-map))
 
