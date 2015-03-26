@@ -32,17 +32,22 @@ Look up the canonical element for an element:
     user=> (get-canonical uf 3)
     2
 
-Getting the count of a union-find data structure returns the number of connected
-components, not the number of elements. count is a constant-time operation.
+Get the number of connected components:
+
+    user=> (count-sets uf)
+    4 ;; 5 elements, but only 4 connected components
+
+Getting the count of a union-find data structure returns the number of elements
+in the universe of the union-find.
 
     user=> (count uf)
-    4 ;; 4 connected components, but 5 elements
+    5
 
-Treating a union-find data structure as a seq similiarly returns only the
-canonical elements of the data structure, not all of the elements:
+Treating a union-find data structure as a seq similarly returns all of the
+elements that have been added to the structure.
 
     user=> (seq uf)
-    (5 4 2 1) ;; doesn't include 3, which is a non-canonical element
+    (5 4 3 2 1)
 
 union-find also implements ILookup and IFn as canonical element lookups, so you
 can use get on it or apply it to an element like you would with a vector or a

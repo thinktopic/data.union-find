@@ -30,7 +30,7 @@ sets that x and y belong to unioned."))
   (equals [this that] (or (identical? this that) (.equals @elt-map @(.elt-map that))))
 
   clojure.lang.Seqable
-  ;; seq returns each of the canonical elements, not all of the elements
+  ;; seq returns all of the elements
   (seq [this]
     (keys @elt-map))
 
