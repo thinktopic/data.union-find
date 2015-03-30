@@ -1,6 +1,7 @@
 (ns jordanlewis.data.union-find-test
   (:use clojure.test
-        jordanlewis.data.union-find))
+        jordanlewis.data.union-find)
+  (:require dev-utils))
 
 (deftest test-union-find
   (let [set (-> (union-find 1 2 3 4 5 6)
@@ -62,6 +63,12 @@
       (is (= nil (set 10)))
       (is (= :not-found (set 10 :not-found))))
 
+    (testing "partitions large dataset correctly"
+      (let [uf (dev-utils/partition-graph (union-find) 10 100 conj union)]
+        (is (= (count-sets uf) 10))
+        (doseq [[a b c] (dev-utils/make-stars 10 100)]
+          (is (= (uf a) (uf b) (uf c))))))
+
     (testing "supports meta"
       (is (= {:with :meta} (meta (with-meta set {:with :meta})))))
 
@@ -78,6 +85,19 @@
                                   (union 1 2)
                                   (union 3 4)
                                   (union 4 5)))]
+    (testing "equal to persistent"
+      (is (= (dev-utils/partition-graph (union-find) 10 100 conj union)
+             (persistent! (dev-utils/partition-graph (transient (union-find)) 10 100 conj! union!)))))
+
+    (testing "no nodes are mutable after persistent! call"
+      ; this checks whether changes to transient v3 have leaked into persistent v2
+      (let [baseline (dev-utils/partition-graph (union-find) 2 2 conj union)
+            v1 (dev-utils/partition-graph (transient (union-find)) 2 2 conj! union!)
+            v2 (persistent! v1)
+            v3 (transient v2)]
+        (is (= baseline v2))
+        (union! v3 1 2)
+        (is (= baseline v2))))
     (testing "Missing elements have nil leaders."
       (let [set (transient (union-find 1 2 3))]
         (is (= nil (get-canonical set 10)))))
@@ -110,15 +130,14 @@
               a (get-canonical set 1)
               c (get-canonical set 3)]
           (is (= a c 1)))))
-    (testing "Count-sets counts the number of connected components."
+    (testing "Count counts the number of total elements in the universe"
       (let [set (transient (-> (union-find 1 2 3 4 5 6)
                 (union 1 2)
                 (union 3 4)
                 (union 4 5)))]
-        (is (= 3 (count-sets set)))
-        (is (= 2 (count-sets (union! set 1 3))))))
-    (testing "Count counts the number of total elements in the universe"
-      (is (= 6 (count master-set))))
+        (is (= 6 (count set)))
+        (is (= 6 (count (union! set 1 3))))
+        ))
     (testing "Conj adds new singletons"
       (let [set (transient (-> (union-find 1 2 3 4 5 6)
                 (union 1 2)
@@ -126,10 +145,10 @@
                 (union 4 5)))
             set (conj! set 7)
             set (conj! set 8)]
+        (is (= 8 (count set)))
         (is (= 5 (count-sets set)))
-        (is (= 8 (count set)))
-        (is (= 4 (count-sets (union! set 6 7))))
-        (is (= 8 (count set)))
+        (is (= 8 (count (union! set 6 7))))
+        (is (= 4 (count-sets set)))
         (is (= 8 (set 8)))
         (is (= 6 ((union! set 6 7) 7)))))
 
@@ -153,13 +172,7 @@
             set-2 (transient (-> (union-find 1 2 3 4 5 6)
                 (union 1 2)
                 (union 3 4)
-                (union 4 5)))
-            ]
-        (is (not= set-1 set-2))
-        )
-        )
+                (union 4 5)))]
+        (is (not= set-1 set-2))))
     (testing "unioning a missing element is a no-op."
-      (is (= master-set (union! master-set 5 10))))
-    (testing "persistent! works"
-      (let [set (persistent! master-set)]
-        (is (= set (persistent! (transient set))))))))
+      (is (= master-set (union! master-set 5 10))))))
