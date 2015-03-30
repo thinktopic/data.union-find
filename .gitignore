@@ -6,3 +6,6 @@ target
 .lein-failures
 .lein-deps-sum
 .nrepl-port
+.lein-repl-history
+pom.xml
+*.swp
